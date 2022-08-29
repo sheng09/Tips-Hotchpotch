@@ -28,8 +28,7 @@ Install and Configure Ubuntu
   - New themes should be place in the folder `.themes` in users' home directory.
   - Here is [an adjusted theme](https://github.com/sheng09/install-ubuntu/blob/main/gnome-professional-solid-40.1-WANG.tgz) based on [Prof-Gnome-theme](https://www.gnome-look.org/p/1334194).
 - **Transparent top bar**.
-  - Install two more gnome extensions: [Transparent Top Bar](https://extensions.gnome.org/extension/1708/transparent-top-bar/) and [Transparent Top Bar (Adjustable transparency)](https://extensions.gnome.org/extension/3960/transparent-top-bar-adjustable-transparency/).
-  - Tick `Extensions`-->`Transparent Top Bar`.
+  - Install one more gnome extension: [Transparent Top Bar (Adjustable transparency)](https://extensions.gnome.org/extension/3960/transparent-top-bar-adjustable-transparency/).
   - Adjust `Extensions`-->`Transparent Top Bar (Adjustable transparency)`.
 - **Transparent dock**
   - Install one more more gnome extension: [dash-to-dock](https://extensions.gnome.org/extension/307/dash-to-dock/).
