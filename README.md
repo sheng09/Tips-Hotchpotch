@@ -37,5 +37,11 @@ Install and Configure Ubuntu
   - `Extensions`-->`Horizontal workspaces`.
   - `Workspaces`-->`Number of Workspaces: 3`.
 
-
+# 4. Configure fonts
+- **Font-manager**
+  ```bash
+  sudo apt install font-manager
+  ```
+- Search for and get more font `.ttf` files, and add them with `font-manager`.
+- Many fancy fonts can be found [here](https://www.dafont.com/theme.php?cat=103) (e.g., [hacker](https://www.dafont.com/hack.font)).
 
