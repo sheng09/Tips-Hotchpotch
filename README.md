@@ -31,6 +31,9 @@ Install and Configure Ubuntu
   - Install two more gnome extensions: [Transparent Top Bar](https://extensions.gnome.org/extension/1708/transparent-top-bar/) and [Transparent Top Bar (Adjustable transparency)](https://extensions.gnome.org/extension/3960/transparent-top-bar-adjustable-transparency/).
   - Tick `Extensions`-->`Transparent Top Bar`.
   - Adjust `Extensions`-->`Transparent Top Bar (Adjustable transparency)`.
+- **Transparent dock**
+  - Install one more more gnome extension: [dash-to-dock](https://extensions.gnome.org/extension/307/dash-to-dock/).
+  - Adjust `Extensions`-->`Dash to dock`. (`Intelligent autohide` can be good.)
 - **Other adjustments within Tweak**
   - `Extensions`-->`Horizontal workspaces`.
   - `Workspaces`-->`Number of Workspaces: 3`.
