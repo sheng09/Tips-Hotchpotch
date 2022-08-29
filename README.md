@@ -22,10 +22,15 @@ Install and Configure Ubuntu
   sudo apt install gnome-tweak-tool
   sudo apt install gnome-shell-extensions
   ```
-- **Adjust theme**. Open `Tweaks`-->`Appearance`-->`Applications`, select one of the theme from dropdown list.
+- **Adjust theme**
+  - Open `Tweaks`-->`Appearance`-->`Applications`, select one of the theme from dropdown list.
   - New themes can be downloaded from [GTK3/4 Themes](https://www.gnome-look.org/browse?cat=135).
   - New themes should be place in the folder `.themes` in users' home directory.
   - Here is [an adjusted theme](https://github.com/sheng09/install-ubuntu/blob/main/gnome-professional-solid-40.1-WANG.tgz) based on [Prof-Gnome-theme](https://www.gnome-look.org/p/1334194).
+- **Transparent top bar**.
+  - Install two more gnome extensions: [Transparent Top Bar](https://extensions.gnome.org/extension/1708/transparent-top-bar/) and [Transparent Top Bar (Adjustable transparency)](https://extensions.gnome.org/extension/3960/transparent-top-bar-adjustable-transparency/).
+  - Tick `Extensions`-->`Transparent Top Bar`.
+  - Adjust `Extensions`-->`Transparent Top Bar (Adjustable transparency)`.
 - **Other adjustments within Tweak**
   - `Extensions`-->`Horizontal workspaces`.
   - `Workspaces`-->`Number of Workspaces: 3`.
