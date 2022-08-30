@@ -49,3 +49,29 @@ Install and Configure Ubuntu
 - Search for and get more font `.ttf` files, and add them with `font-manager`.
 - Many fancy fonts can be found [here](https://www.dafont.com/theme.php?cat=103) (e.g., [hacker](https://www.dafont.com/hack.font)).
 
+# 5. Enabel server 
+- **OpenSSH server**
+  Run the commands below to install and enable openssh server.
+  ```
+  sudo apt-get install openssh-server
+  sudo systemctl status ssh  # check the status
+  sudo systemctl enable ssh  # enable and start ssh
+  sudo systemctl start ssh
+  #
+  sudo apt install net-tools
+  ifconfig  # check the IP address of the machine
+  ```
+- **Apache web server** for sharing files
+  - Install `apache2`:
+    ```bash
+    sudo apt install apache2
+    ```
+  - Create a directory `foldername_whatever/` in home, and then create a symbolic link to it in `/var/www/html`. Finally, one can access `$ip$/toshare` from a web browser.
+    ```bash
+    cd ~
+    mkdir foldername_whatever
+    cd /var/www/html
+    sudo ln -s ~/foldername_whatever .
+    # Then one can access $ip$/foldername_whatever, in which $ip$ is the IP/address of the machine.
+    ```
+ 
