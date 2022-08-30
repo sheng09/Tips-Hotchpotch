@@ -74,4 +74,23 @@ Install and Configure Ubuntu
     sudo ln -s ~/foldername_whatever .
     # Then one can access $ip$/foldername_whatever, in which $ip$ is the IP/address of the machine.
     ```
- 
+ - **Jupyter-lab** server
+   - Install `jupyterlab` via `pip3`.
+     ```bash
+     pip3 install jupyterlab
+     ```
+   - Enable and configure jupyterlab server.
+     ```bash
+     jupyter server --generate-config
+     jupyter server password  # set the password
+     nohup jupyter-lab --port $XXXX$ --no-browser > ~/.jupyter/nohuo.log & # replace XXXX to four digits, (e.g., 9832)
+     ```
+   - Access jupyterlab server on local machine. Open `http://localhost:$XXXX$` in a web browser, where $XXXX$ is the four digits.
+   - Access jupyterlab server on a remote terminal.
+     ```bash
+     ssh -N -L $YYYY$:localhost:$XXXX$ username@server_address
+     ```
+     in which $XXXX$ is the previous four digits set on the server, and $YYYY$ is another four independent digits set on the remote terminal.
+     Then, one can access on the remote terminal by opening `http://localhost:$YYYY$` in a web browser.
+
+
