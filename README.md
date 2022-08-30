@@ -34,9 +34,9 @@ Install and Configure Ubuntu
   - Install one more more gnome extension: [dash-to-dock](https://extensions.gnome.org/extension/307/dash-to-dock/).
   - Adjust `Extensions`-->`Dash to dock`. (`Intelligent autohide` can be good.)
   - Disable the ubuntu built-in dock in case of two overlapping docks.
-  ```bash
-  gnome-extensions disable ubuntu-dock@ubuntu.com
-  ```
+     ```bash
+     gnome-extensions disable ubuntu-dock@ubuntu.com
+     ```
 - **Other adjustments within Tweak**
   - `Extensions`-->`Horizontal workspaces`.
   - `Workspaces`-->`Number of Workspaces: 3`.
