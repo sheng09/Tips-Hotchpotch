@@ -2,7 +2,7 @@ Install and Configure Ubuntu
 ===
 
 # 1. Install system
-- Note `UEFI`, `Legacy` things in BIOS setting, as they are related to disk partitioning method. `UEFI` needs a `efi` partition.
+- Note `UEFI`, `Legacy` things in BIOS setting, as they are related to disk partitioning method. `UEFI` needs an `efi` partition.
 - `/boot` should not be too small (e.g., <512Mb), or system updates sometimes fail due to insufficient space in `/boot`. 
 
 # 2. Install Chinese sougou-pinyin input method
@@ -49,7 +49,7 @@ Install and Configure Ubuntu
 - Search for and get more font `.ttf` files, and add them with `font-manager`.
 - Many fancy fonts can be found [here](https://www.dafont.com/theme.php?cat=103) (e.g., [hacker](https://www.dafont.com/hack.font)).
 
-# 5. Enabel server 
+# 5. Setup servers 
 - **OpenSSH server**
 
   Run the commands below to install and enable openssh server.
