@@ -51,6 +51,7 @@ Install and Configure Ubuntu
 
 # 5. Enabel server 
 - **OpenSSH server**
+
   Run the commands below to install and enable openssh server.
   ```
   sudo apt-get install openssh-server
@@ -74,7 +75,7 @@ Install and Configure Ubuntu
     sudo ln -s ~/foldername_whatever .
     # Then one can access $ip$/foldername_whatever, in which $ip$ is the IP/address of the machine.
     ```
- - **Jupyter-lab** server
+ - **Jupyter-lab server**
    - Install `jupyterlab` via `pip3`.
      ```bash
      pip3 install jupyterlab
@@ -90,7 +91,7 @@ Install and Configure Ubuntu
      ```bash
      ssh -N -L $YYYY$:localhost:$XXXX$ username@server_address
      ```
-     in which $XXXX$ is the previous four digits set on the server, and $YYYY$ is another four independent digits set on the remote terminal.
+     in which `$XXXX$` is the previous four digits set on the server, and `$YYYY$` is another four independent digits set on the remote terminal.
      Then, one can access on the remote terminal by opening `http://localhost:$YYYY$` in a web browser.
 
 
