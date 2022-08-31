@@ -42,13 +42,28 @@ Install and Configure Ubuntu
   - `Workspaces`-->`Number of Workspaces: 3`.
 
 # 4. Configure fonts
-- **Font-manager**
-  ```bash
-  sudo apt install font-manager
-  ```
-- Search for and get more font `.ttf` files, and add them with `font-manager`.
-- Many fancy fonts can be found [here](https://www.dafont.com/theme.php?cat=103) (e.g., [hacker](https://www.dafont.com/hack.font)).
-
+- Manage fonts with **Font-manager** as a sudoer.
+  - Instal `font-manager`:
+     ```bash
+     sudo apt install font-manager
+     ```
+  - Search for and get more font `.ttf` files, and add them with `font-manager`.
+  - Many fancy fonts can be found [here](https://www.dafont.com/theme.php?cat=103) (e.g., [hacker](https://www.dafont.com/hack.font)).
+- Add/manage fonts as an user.
+  - Add
+    ```bash
+    mkdir ~/.local/share/fonts # create this directory if it does not exist
+    mv font_name_.ttf ~/.local/share/fonts/
+    fc-cache -f -v  #clear and regenerate your font cache
+    ```
+  - Check if a font is installed.
+    ```bash
+    fc-list | grep Arial # an example for checking for Arial
+    ```
+- Update **matplotlib** cache to enable using new fonts.
+    ```bash
+    rm ~/.cache/matplotlib -rf
+    ```
 # 5. Setup servers 
 - **OpenSSH server**
 
