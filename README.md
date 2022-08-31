@@ -109,4 +109,18 @@ Install and Configure Ubuntu
      in which `$XXXX$` is the previous four digits set on the server, and `$YYYY$` is another four independent digits set on the remote terminal.
      Then, one can access on the remote terminal by opening `http://localhost:$YYYY$` in a web browser.
 
+# 6. Manage Python modules with `pip3`
+  - Several commands for managing/fixing pip3 modules and their dependency:
+    ```bash
+    # Specify version when install a module
+    # The following example specify version 1.22
+    pip3 install numpy==1.22
+    
+    # Ignore the existed module
+    # The following example will ignore the installed matplotlib in /usr/local/...,
+    # and install the matplotlib to ~/.local/....
+    pip3 install --ignore-installed --user matplotlib
+    
+    # 
+    ```
 
