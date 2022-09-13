@@ -90,7 +90,13 @@ Install and Configure Ubuntu
     sudo ln -s ~/foldername_whatever .
     # Then one can access $ip$/foldername_whatever, in which $ip$ is the IP/address of the machine.
     ```
- - **Jupyter-lab server**
+  - Restart/stop apache2 server.
+    ```bash
+    sudo service apache2 stop
+    sudo service apache2 restart
+    sudo service apache2 reload   # etc
+    ```
+- **Jupyter-lab server**
    - Install `jupyterlab` via `pip3`.
      ```bash
      pip3 install jupyterlab
