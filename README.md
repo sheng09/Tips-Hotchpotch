@@ -129,4 +129,16 @@ Install and Configure Ubuntu
     
     # 
     ```
+    
+# 7. Some problems and answers
 
+  - Some errors when running `pyvista` via ssh from a remote server:
+    ```bash
+    libGL error: No matching fbConfigs or visuals found
+    libGL error: failed to load driver: swrast
+    ```
+    Solution
+    ```bash
+    # Set this on the remote server
+    export DISPLAY=:0.0 glxinfo
+    ```
