@@ -190,7 +190,7 @@ A Mixture of Tips
   - Step3-N: activate conda and setup an environment
     ```bash
     start-conda # enter the base
-    # then an example
+    # then an example from https://rapids.ai/start.html#get-rapids
     conda -p ~/conda_env/my_env1 -c rapidsai -c nvidia -c conda-forge cusignal==22.10 cuml==22.10 cudf==22.10 python==3.8.5 cudatoolkit=11.4
     conda activate ~/conda_env/my_env1
     ```
