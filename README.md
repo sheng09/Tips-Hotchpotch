@@ -1,11 +1,28 @@
-Install and Configure Ubuntu
+A Mixture of Tips
 ===
+<!-- TOC -->
 
-# 1. Install system
+- [A Mixture of Tips](#a-mixture-of-tips)
+- [1. Install and Configure Ubuntu](#1-install-and-configure-ubuntu)
+  - [1.1 Install system](#11-install-system)
+  - [1.2 Install Chinese sougou-pinyin input method](#12-install-chinese-sougou-pinyin-input-method)
+  - [1.3 Configure gnome's appearance with `Tweak`](#13-configure-gnomes-appearance-with-tweak)
+  - [1.4 Configure fonts](#14-configure-fonts)
+- [2. Setup Different Servers](#2-setup-different-servers)
+- [3. Python Things](#3-python-things)
+  - [3.1 Manage Python modules with `pip3`](#31-manage-python-modules-with-pip3)
+- [X. Some problems and answers](#x-some-problems-and-answers)
+  - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
+
+<!-- /TOC -->
+
+# 1. Install and Configure Ubuntu
+
+## 1.1 Install system
 - Note `UEFI`, `Legacy` things in BIOS setting, as they are related to disk partitioning method. `UEFI` needs an `efi` partition.
 - `/boot` should not be too small (e.g., <512Mb), or system updates sometimes fail due to insufficient space in `/boot`. 
 
-# 2. Install Chinese sougou-pinyin input method
+## 1.2 Install Chinese sougou-pinyin input method
 - Following the [offical site](https://shurufa.sogou.com/linux) to configure system, downloand and install sougou-pinyin.
 - Note the required libary that is not listed in the offical site `qml-module-gsettings1.0`.
   Install it with:
@@ -15,7 +32,7 @@ Install and Configure Ubuntu
 - If it cannot work properly, check the lack of libraries by running `fcitx-autostart` in a terminal. Its output/logs will show which libraries are missing.
 
 
-# 3. Configure gnome's appearance with `Tweak`
+## 1.3 Configure gnome's appearance with `Tweak`
 
 - **Instal Tweak**
   ```bash
@@ -41,7 +58,7 @@ Install and Configure Ubuntu
   - `Extensions`-->`Horizontal workspaces`.
   - `Workspaces`-->`Number of Workspaces: 3`.
 
-# 4. Configure fonts
+## 1.4 Configure fonts
 - Manage fonts with **Font-manager** as a sudoer.
   - Instal `font-manager`:
      ```bash
@@ -64,7 +81,8 @@ Install and Configure Ubuntu
     ```bash
     rm ~/.cache/matplotlib -rf
     ```
-# 5. Setup servers 
+
+# 2. Setup Different Servers 
 - **OpenSSH server**
 
   Run the commands below to install and enable openssh server.
@@ -115,7 +133,9 @@ Install and Configure Ubuntu
      in which `$XXXX$` is the previous four digits set on the server, and `$YYYY$` is another four independent digits set on the remote terminal.
      Then, one can access on the remote terminal by opening `http://localhost:$YYYY$` in a web browser.
 
-# 6. Manage Python modules with `pip3`
+# 3. Python Things
+
+## 3.1 Manage Python modules with `pip3`
   - Several commands for managing/fixing pip3 modules and their dependency:
     ```bash
     # Specify version when install a module
@@ -130,8 +150,9 @@ Install and Configure Ubuntu
     # 
     ```
     
-# 7. Some problems and answers
+# X. Some problems and answers
 
+## X.1 Run `pyvista` from SSH Remote Server
   - Some errors when running `pyvista` via ssh from a remote server:
     ```bash
     libGL error: No matching fbConfigs or visuals found
