@@ -12,8 +12,9 @@ A Mixture of Tips
   - [2.1 OpenSSH Server](#21-openssh-server)
   - [2.2 OpenSSH Server](#22-openssh-server)
   - [2.3 Jupyter-lab Server](#23-jupyter-lab-server)
-- [3. Python Things](#3-python-things)
+- [3. Package and Environment Management](#3-package-and-environment-management)
   - [3.1 Manage Python modules with `pip3`](#31-manage-python-modules-with-pip3)
+  - [3.2 `conda` for Package and Environment Management](#32-conda-for-package-and-environment-management)
 - [4. HPC, MPI, CUDA Things](#4-hpc-mpi-cuda-things)
   - [4.1 Enable `mpi4py` and `openmpi` for `cupy`](#41-enable-mpi4py-and-openmpi-for-cupy)
 - [X. Some problems and answers](#x-some-problems-and-answers)
@@ -141,7 +142,7 @@ A Mixture of Tips
      in which `$XXXX$` is the previous four digits set on the server, and `$YYYY$` is another four independent digits set on the remote terminal.
      Then, one can access on the remote terminal by opening `http://localhost:$YYYY$` in a web browser.
 
-# 3. Python Things
+# 3. Package and Environment Management
 
 ## 3.1 Manage Python modules with `pip3`
   - Several commands for managing/fixing pip3 modules and their dependency:
@@ -158,17 +159,56 @@ A Mixture of Tips
     #
     ```
 
+## 3.2 `conda` for Package and Environment Management
+  - Install `miniconda3` following the [official manuals](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+  **Note: in the last step of installation, please DO NOT allow the installation to modify your `~/.bash_*` files. Such modification is dirty**
+
+  - Set the following alias into your `~/.bash_rc` or `~/.bash_profile`.
+    ```bash
+    alias start-conda='source /g/data/em78/SW/software/miniconda3/bin/activate && conda init'
+    ```
+    After running `source ~/.bash_rc` or `source ~/.bash_profile`, then you can use `start-conda` to enable the `base` conda environment, and `conda deactivate` to leave such `base` environment.
+    **Note: please comment the generated conda related things in the `~/.bash_rc` or `~/.bash_profile`.**
+    ```
+    # Comment the below, even the comments, so that it would not be generated next time/
+    ## >>> conda initialize >>>
+    ## !! Contents within this block are managed by 'conda init' !!
+    #__conda_setup="$('/g/data/em78/SW/software/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    #if [ $? -eq 0 ]; then
+    #    eval "$__conda_setup"
+    #else
+    #    if [ -f "/g/data/em78/SW/software/miniconda3/etc/profile.d/conda.sh" ]; then
+    #        . "/g/data/em78/SW/software/miniconda3/etc/profile.d/conda.sh"
+    #    else
+    #        export PATH="/g/data/em78/SW/software/miniconda3/bin:$PATH"
+    #    fi
+    #fi
+    #unset __conda_setup
+    ## <<< conda initialize <<<
+    ```
+
+  - Activate conda and setup an environment
+    ```
+    start-conda # enter the base
+    # then an example
+    conda -p ~/conda_env/my_env1 -c rapidsai -c nvidia -c conda-forge cusignal==22.10 cuml==22.10 cudf==22.10 python==3.8.5 cudatoolkit=11.4
+    conda activate ~/conda_env/my_env1
+    ```
+
+
 # 4. HPC, MPI, CUDA Things
 
 ## 4.1 Enable `mpi4py` and `openmpi` for `cupy`
 
-  We need to install and configure something according to the offical document of [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#using-conda), "*The openmpi package on conda-forge has built-in `CUDA` support, but it is disabled by default. To enable it, follow the instruction outlined during conda install. Additionally, `UCX` support is also available once the ucx package is installed*", and and offical document of [`cupy`](https://docs.cupy.dev/en/stable/user_guide/interoperability.html), "*This new feature is added since `mpi4py` 3.1.0*".
+  We need to install and configure something according to the offical document of [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#using-conda), "*...The openmpi package on conda-forge has built-in `CUDA` support, but it is disabled by default. To enable it, follow the instruction outlined during conda install. Additionally, `UCX` support is also available once the ucx package is installed...*", and and offical document of [`cupy`](https://docs.cupy.dev/en/stable/user_guide/interoperability.html), "*...This new feature is added since `mpi4py` 3.1.0...*".
 
-  - Install `mpi4py`>3.1.0 with openmpi support:
+  - Step1: install `mpi4py>=3.1.0· with openmpi support:
     ```bash
-    conda install -c conda-forge mpi4py openmpi
+    #make sure openmpi module is correctly loaded to match the one used by conda install
+    module load openmpi/4.1.4
+    conda install -c conda-forge mpi4py==3.1.1 openmpi=4.1.4 # make sure if it is openmpi or mpich or sth else
     ```
-  - Enable CUDA and UCX supports following the instructions outputed by the `conda install ...` via either setting the environment before launching MPI programs:
+  - Step2: Enable CUDA and UCX supports following the instructions outputed by the `conda install ...` via either setting the environment before launching MPI programs:
     ```bash
     export OMPI_MCA_opal_cuda_support=true
     export OMPI_MCA_pml="ucx"
