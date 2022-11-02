@@ -9,8 +9,13 @@ A Mixture of Tips
   - [1.3 Configure gnome's appearance with `Tweak`](#13-configure-gnomes-appearance-with-tweak)
   - [1.4 Configure fonts](#14-configure-fonts)
 - [2. Setup Different Servers](#2-setup-different-servers)
+  - [2.1 OpenSSH Server](#21-openssh-server)
+  - [2.2 OpenSSH Server](#22-openssh-server)
+  - [2.3 Jupyter-lab Server](#23-jupyter-lab-server)
 - [3. Python Things](#3-python-things)
   - [3.1 Manage Python modules with `pip3`](#31-manage-python-modules-with-pip3)
+- [4. HPC, MPI, CUDA Things](#4-hpc-mpi-cuda-things)
+  - [4.1 Enable `mpi4py` and `openmpi` for `cupy`](#41-enable-mpi4py-and-openmpi-for-cupy)
 - [X. Some problems and answers](#x-some-problems-and-answers)
   - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
 
@@ -83,7 +88,8 @@ A Mixture of Tips
     ```
 
 # 2. Setup Different Servers 
-- **OpenSSH server**
+
+## 2.1 OpenSSH Server
 
   Run the commands below to install and enable openssh server.
   ```
@@ -95,7 +101,9 @@ A Mixture of Tips
   sudo apt install net-tools
   ifconfig  # check the IP address of the machine
   ```
-- **Apache web server** for sharing files
+
+## 2.2 OpenSSH Server
+  Setup **Apache web server** for sharing files
   - Install `apache2`:
     ```bash
     sudo apt install apache2
@@ -114,7 +122,7 @@ A Mixture of Tips
     sudo service apache2 restart
     sudo service apache2 reload   # etc
     ```
-- **Jupyter-lab server**
+## 2.3 Jupyter-lab Server
    - Install `jupyterlab` via `pip3`.
      ```bash
      pip3 install jupyterlab
@@ -141,15 +149,38 @@ A Mixture of Tips
     # Specify version when install a module
     # The following example specify version 1.22
     pip3 install numpy==1.22
-    
+
     # Ignore the existed module
     # The following example will ignore the installed matplotlib in /usr/local/...,
     # and install the matplotlib to ~/.local/....
     pip3 install --ignore-installed --user matplotlib
-    
-    # 
+
+    #
     ```
-    
+
+# 4. HPC, MPI, CUDA Things
+
+## 4.1 Enable `mpi4py` and `openmpi` for `cupy`
+
+  We need to install and configure something according to the offical document of [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#using-conda), "*The openmpi package on conda-forge has built-in `CUDA` support, but it is disabled by default. To enable it, follow the instruction outlined during conda install. Additionally, `UCX` support is also available once the ucx package is installed*", and and offical document of [`cupy`](https://docs.cupy.dev/en/stable/user_guide/interoperability.html), "*This new feature is added since `mpi4py` 3.1.0*".
+
+  - Install `mpi4py`>3.1.0 with openmpi support:
+    ```bash
+    conda install -c conda-forge mpi4py openmpi
+    ```
+  - Enable CUDA and UCX supports following the instructions outputed by the `conda install ...` via either setting the environment before launching MPI programs:
+    ```bash
+    export OMPI_MCA_opal_cuda_support=true
+    export OMPI_MCA_pml="ucx"
+    export OMPI_MCA_osc="ucx"
+    ```
+    or launching MPI programs with arguements like:
+    ```bash
+    mpiexec --mca opal_cuda_support 1  ...   # for cuda
+    mpiexec --mca pml ucx --mca osc ucx ...  # for ucx
+    mpiexec --mca opal_cuda_support 1  --mca pml ucx  --mca osc ucx ... # for both
+    ```
+
 # X. Some problems and answers
 
 ## X.1 Run `pyvista` from SSH Remote Server
