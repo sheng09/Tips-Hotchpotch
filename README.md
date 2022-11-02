@@ -160,16 +160,16 @@ A Mixture of Tips
     ```
 
 ## 3.2 `conda` for Package and Environment Management
-  - Install `miniconda3` following the [official manuals](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+  - Step1: install `miniconda3` following the [official manuals](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
   **Note: in the last step of installation, please DO NOT allow the installation to modify your `~/.bash_*` files. Such modification is dirty**
 
-  - Set the following alias into your `~/.bash_rc` or `~/.bash_profile`.
+  - Step2: set the following alias into your `~/.bash_rc` or `~/.bash_profile`.
     ```bash
     alias start-conda='source /g/data/em78/SW/software/miniconda3/bin/activate && conda init'
     ```
     After running `source ~/.bash_rc` or `source ~/.bash_profile`, then you can use `start-conda` to enable the `base` conda environment, and `conda deactivate` to leave such `base` environment.
     **Note: please comment the generated conda related things in the `~/.bash_rc` or `~/.bash_profile`.**
-    ```
+    ```bash
     # Comment the below, even the comments, so that it would not be generated next time/
     ## >>> conda initialize >>>
     ## !! Contents within this block are managed by 'conda init' !!
@@ -187,7 +187,7 @@ A Mixture of Tips
     ## <<< conda initialize <<<
     ```
 
-  - Activate conda and setup an environment
+  - Step3-N: activate conda and setup an environment
     ```
     start-conda # enter the base
     # then an example
