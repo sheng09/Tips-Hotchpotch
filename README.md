@@ -188,7 +188,7 @@ A Mixture of Tips
     ```
 
   - Step3-N: activate conda and setup an environment
-    ```
+    ```bash
     start-conda # enter the base
     # then an example
     conda -p ~/conda_env/my_env1 -c rapidsai -c nvidia -c conda-forge cusignal==22.10 cuml==22.10 cudf==22.10 python==3.8.5 cudatoolkit=11.4
@@ -202,11 +202,12 @@ A Mixture of Tips
 
   We need to install and configure something according to the offical document of [`mpi4py`](https://mpi4py.readthedocs.io/en/latest/install.html#using-conda), "*...The openmpi package on conda-forge has built-in `CUDA` support, but it is disabled by default. To enable it, follow the instruction outlined during conda install. Additionally, `UCX` support is also available once the ucx package is installed...*", and and offical document of [`cupy`](https://docs.cupy.dev/en/stable/user_guide/interoperability.html), "*...This new feature is added since `mpi4py` 3.1.0...*".
 
-  - Step1: install `mpi4py>=3.1.0· with openmpi support:
+  - Step1: install `mpi4py>=3.1.0` with openmpi support:
     ```bash
     #make sure openmpi module is correctly loaded to match the one used by conda install
-    module load openmpi/4.1.4
-    conda install -c conda-forge mpi4py==3.1.1 openmpi=4.1.4 # make sure if it is openmpi or mpich or sth else
+    # make sure if it is openmpi or mpich or something else that match your environment
+    module load openmpi/4.1.4 cuda/11.5
+    conda install -c conda-forge mpi4py==3.1.1 openmpi=4.1.4 
     ```
   - Step2: Enable CUDA and UCX supports following the instructions outputed by the `conda install ...` via either setting the environment before launching MPI programs:
     ```bash
@@ -216,9 +217,60 @@ A Mixture of Tips
     ```
     or launching MPI programs with arguements like:
     ```bash
-    mpiexec --mca opal_cuda_support 1  ...   # for cuda
-    mpiexec --mca pml ucx --mca osc ucx ...  # for ucx
-    mpiexec --mca opal_cuda_support 1  --mca pml ucx  --mca osc ucx ... # for both
+    mpirun --mca opal_cuda_support 1  ...   # for cuda
+    mpirun --mca pml ucx --mca osc ucx ...  # for ucx
+    mpirun --mca opal_cuda_support 1  --mca pml ucx  --mca osc ucx ... # for both
+    ```
+  - Supplementary: an example to test if it works.
+    ```py
+    #/usr/bin/env python3
+    #
+    # exam.py
+    #
+    from mpi4py import MPI
+    import cupy
+
+    omm = MPI.COMM_WORLD
+    ize = comm.Get_size()
+    ank = comm.Get_rank()
+
+    # Allreduce
+    sendbuf = cupy.arange(10, dtype='i')
+    recvbuf = cupy.empty_like(sendbuf)
+    # always make sure the GPU buffer is ready before any MPI operation
+
+    print("before comm", size, rank, recvbuf, sendbuf)
+
+    cupy.cuda.get_current_stream().synchronize()
+    comm.Allreduce(sendbuf, recvbuf)
+    assert cupy.allclose(recvbuf, sendbuf*size)
+
+
+    # Bcast
+    if rank == 0:
+        buf = cupy.arange(100, dtype=cupy.complex64)
+    else:
+        buf = cupy.empty(100, dtype=cupy.complex64)
+    cupy.cuda.get_current_stream().synchronize()
+    comm.Bcast(buf)
+    assert cupy.allclose(buf, cupy.arange(100, dtype=cupy.complex64))
+
+    # Send-Recv
+    if rank == 0:
+        buf = cupy.arange(20, dtype=cupy.float64)
+        cupy.cuda.get_current_stream().synchronize()
+        comm.Send(buf, dest=1, tag=88)
+    else:
+        buf = cupy.empty(20, dtype=cupy.float64)
+        cupy.cuda.get_current_stream().synchronize()
+        comm.Recv(buf, source=0, tag=88)
+        assert cupy.allclose(buf, cupy.arange(20, dtype=cupy.float64))
+
+    print("after comm", size, rank, recvbuf, sendbuf)
+    ```
+    Run it:
+    ```
+    mpirun --mca opal_cuda_support 1  --mca pml ucx  --mca osc ucx python3 exam.py
     ```
 
 # X. Some problems and answers
