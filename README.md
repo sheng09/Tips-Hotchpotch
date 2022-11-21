@@ -17,6 +17,7 @@ A Mixture of Tips
   - [3.2 `conda` for Package and Environment Management](#32-conda-for-package-and-environment-management)
 - [4. HPC, MPI, CUDA Things](#4-hpc-mpi-cuda-things)
   - [4.1 Enable `mpi4py` and `openmpi` for `cupy`](#41-enable-mpi4py-and-openmpi-for-cupy)
+  - [4.2 Runtime Err `[LOG_CAT_ML] ml_discover_hierarchy exited with error`](#42-runtime-err-log_cat_ml-ml_discover_hierarchy-exited-with-error)
 - [X. Some problems and answers](#x-some-problems-and-answers)
   - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
 
@@ -272,6 +273,33 @@ A Mixture of Tips
     ```
     mpirun --mca opal_cuda_support 1  --mca pml ucx  --mca osc ucx python3 exam.py
     ```
+
+## 4.2 Runtime Err `[LOG_CAT_ML] ml_discover_hierarchy exited with error`
+
+  When using `mpi4py` to call MPI on NCI nodes, warning/error happens while they
+  do not affect the running and results:
+
+    ```bash
+    [LOG_CAT_ML] component basesmuma is not available but requested in hierarchy: basesmuma,basesmuma,ucx_p2p:basesmsocket,basesmuma,p2p
+    [LOG_CAT_ML] ml_discover_hierarchy exited with error
+    ```
+  Ben Menadue at NCI explained to me this [issue](https://track.nci.org.au/servicedesk/customer/portal/5/HELP-185744):
+
+  *I'm going to guess you have a Python script calling MPI? That error message comes from hcoll, one of the Mellanox accelerated collective components inside OpenMPI, and arises when it's not able to open some of its plugins. And the usual cause of this is trying to use MPI from a Python script.*
+
+  *The issue arises because hcoll's plugins expect the main hcoll library to be loaded into the global symbol namespace. However, Python loads extension modules with the `RTLD_LOCAL` flag, which causes the extension module itself and any of its dependencies (including the MPI and hcoll libraries) to be loaded into a private symbol namespace. The idea is that different Python extension modules should be isolated from each other, but a side-effect is that hcoll's plugins can no longer resolve symbols from the main hcoll library and thus can't be loaded.*
+
+  *It's a common issue that arises when trying to mix C libraries that use a plugin-like architecture with Python. If that plugin framework hasn't explicitly been designed to support such usage. OpenMPI itself used to the same problem, but we avoided it there by bundling all the plugins into the main library when building it. Unfortunately, since hcoll is only provided as a pre-built collection of libraries from Mellanox, we can't use the same trick for that.*
+
+  *It's not a fatal error, it just means that some collective operations might not be as fast as they could be. However that's usually not a problem for Python scripts: using Python usually incurs other overheads that would dominate over any latency improvement that the accelerated transports provides.*
+
+  *If you really did still want to use the accelerated transfers, the usual solution is to LD_PRELOAD the MPI library (libmpi.so), which forces it and its dependencies (including hcoll) to be loaded globally, i.e. how hcoll expects it. So something like this:*
+
+  **Solution**
+  ```bash
+  mpirun -x LD_PRELOAD=libmpi.so ... python3 path/to/my/script.py ...
+  ```
+  
 
 # X. Some problems and answers
 
