@@ -12,6 +12,7 @@ A Mixture of Tips
   - [2.1 OpenSSH Server](#21-openssh-server)
   - [2.2 OpenSSH Server](#22-openssh-server)
   - [2.3 Jupyter-lab Server](#23-jupyter-lab-server)
+  - [2.4 Connect to a Remote Server via An Intermediate Server](#24-connect-to-a-remote-server-via-an-intermediate-server)
 - [3. Package and Environment Management](#3-package-and-environment-management)
   - [3.1 Manage Python modules with `pip3`](#31-manage-python-modules-with-pip3)
   - [3.2 `conda` for Package and Environment Management](#32-conda-for-package-and-environment-management)
@@ -142,6 +143,33 @@ A Mixture of Tips
      ```
      in which `$XXXX$` is the previous four digits set on the server, and `$YYYY$` is another four independent digits set on the remote terminal.
      Then, one can access on the remote terminal by opening `http://localhost:$YYYY$` in a web browser.
+
+## 2.4 Connect to a Remote Server via An Intermediate Server
+
+Sometimes, we need to use an intermediate server, a jump box, to connect to an server that cannot not be access publicly, for example, a internal computation node of within a cluster.
+
+  - **Setting in VS-Code**
+
+    Add the following settings into `somewhere/{yourusername}/.ssh/config` which can be accessed in VS-Code via searching for *Remote-SSH: Open Configuration File...* in command pannel (Ctrl+Shift+P).
+    ```bash
+    # Jump box with public IP address
+    Host jump-box # name shown in vscode for the jump box
+        HostName gadi.nci.org.au
+        User your_user_name
+        #IdentityFile ~/.ssh/jumpbox #not necessary if using password
+
+    # Target machine with private IP address
+    Host target-box # name shown in vscode for the target machine
+        HostName gadi-cpu-bdw-0145.gadi.nci.org.au # IP of the machine can be seen by the jump-box
+        User your_user_name
+        #IdentityFile ~/.ssh/target
+        ProxyCommand ssh -q -W %h:%p jump-box
+
+    ```
+
+  - **Manually ssh Connection**
+
+    Coming when in demand.
 
 # 3. Package and Environment Management
 
