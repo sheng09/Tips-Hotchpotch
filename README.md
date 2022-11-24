@@ -307,10 +307,10 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
   When using `mpi4py` to call MPI on NCI nodes, warning/error happens while they
   do not affect the running and results:
 
-    ```bash
-    [LOG_CAT_ML] component basesmuma is not available but requested in hierarchy: basesmuma,basesmuma,ucx_p2p:basesmsocket,basesmuma,p2p
-    [LOG_CAT_ML] ml_discover_hierarchy exited with error
-    ```
+  ```bash
+  [LOG_CAT_ML] component basesmuma is not available but requested in hierarchy: basesmuma,basesmuma,ucx_p2p:basesmsocket,basesmuma,p2p
+  [LOG_CAT_ML] ml_discover_hierarchy exited with error
+  ```
   Ben Menadue at NCI explained to me this [issue](https://track.nci.org.au/servicedesk/customer/portal/5/HELP-185744):
 
   *I'm going to guess you have a Python script calling MPI? That error message comes from hcoll, one of the Mellanox accelerated collective components inside OpenMPI, and arises when it's not able to open some of its plugins. And the usual cause of this is trying to use MPI from a Python script.*
