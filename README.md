@@ -19,6 +19,7 @@ A Mixture of Tips
   - [4.1 Enable `mpi4py` and `openmpi` for `cupy`](#41-enable-mpi4py-and-openmpi-for-cupy)
 - [X. Some problems and answers](#x-some-problems-and-answers)
   - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
 
 <!-- /TOC -->
 
@@ -285,4 +286,15 @@ A Mixture of Tips
     ```bash
     # Set this on the remote server
     export DISPLAY=:0.0 glxinfo
+    ```
+
+## X.2 `Rsync` cheatsheet
+
+  - **Only select specific files:**
+    ```bash
+    rsync -av --include "folder_pattern*/file_pattern*" --include='*/' --exclude="*" remote_folder local_folder
+    ```
+  - Only select specific files and **exclude the sub-directories that don't contain any targeted files**
+    ```bash
+    rsync -av --prune-empty-dirs --include "folder_pattern*/file_pattern*" --include='*/' --exclude="*" remote_folder local_folder
     ```
