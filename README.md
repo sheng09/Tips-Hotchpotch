@@ -353,6 +353,6 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
     ```
   - Only select specific files and **exclude the sub-directories that don't contain any targeted files**
     ```bash
-    rsync -av --prune-empty-dirs --include='*/' --include "folder_pattern*/file_pattern*" \
+    rsync -av --prune-empty-dirs --include="*/" --include "folder_pattern*/file_pattern*" \
           --exclude="*" remote_folder local_folder
     ```
