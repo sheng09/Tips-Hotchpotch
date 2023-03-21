@@ -356,3 +356,14 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
     rsync -av --prune-empty-dirs --include="*/" --include "folder_pattern*/file_pattern*" \
           --exclude="*" remote_folder local_folder
     ```
+
+## X.3 What and why `Kill` a process
+
+  Use the following command to find out details:
+    ```bash
+    dmesg -T| grep -E -i -B100 'killed process'
+    ```
+  
+  Where `-B100` signifies the number of lines before the kill happened. Omit `-T` on Mac OS.
+  
+  The source is from [here](https://stackoverflow.com/questions/726690/what-killed-my-process-and-why)
