@@ -22,6 +22,7 @@ A Mixture of Tips
 - [X. Some problems and answers](#x-some-problems-and-answers)
   - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
   - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
 
 <!-- /TOC -->
 
