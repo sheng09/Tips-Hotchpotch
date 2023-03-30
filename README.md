@@ -10,7 +10,7 @@ A Mixture of Tips
   - [1.4 Configure fonts](#14-configure-fonts)
 - [2. Setup Different Servers](#2-setup-different-servers)
   - [2.1 OpenSSH Server](#21-openssh-server)
-  - [2.2 OpenSSH Server](#22-openssh-server)
+  - [2.2 Apache Server](#22-openssh-server)
   - [2.3 Jupyter-lab Server](#23-jupyter-lab-server)
   - [2.4 Connect to a Remote Server via An Intermediate Server](#24-connect-to-a-remote-server-via-an-intermediate-server)
 - [3. Package and Environment Management](#3-package-and-environment-management)
@@ -107,7 +107,7 @@ A Mixture of Tips
   ifconfig  # check the IP address of the machine
   ```
 
-## 2.2 OpenSSH Server
+## 2.2 Apache Server
   Setup **Apache web server** for sharing files
   - Install `apache2`:
     ```bash
@@ -117,6 +117,7 @@ A Mixture of Tips
     ```bash
     cd ~
     mkdir foldername_whatever
+    chmod -R o+x foldername_whatever # make sure the folder has permission of x for others
     cd /var/www/html
     sudo ln -s ~/foldername_whatever .
     # Then one can access $ip$/foldername_whatever, in which $ip$ is the IP/address of the machine.
