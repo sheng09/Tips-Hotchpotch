@@ -10,7 +10,7 @@ A Mixture of Tips
   - [1.4 Configure fonts](#14-configure-fonts)
 - [2. Setup Different Servers](#2-setup-different-servers)
   - [2.1 OpenSSH Server](#21-openssh-server)
-  - [2.2 Apache Server](#22-openssh-server)
+  - [2.2 Apache Server](#22-apache-server)
   - [2.3 Jupyter-lab Server](#23-jupyter-lab-server)
   - [2.4 Connect to a Remote Server via An Intermediate Server](#24-connect-to-a-remote-server-via-an-intermediate-server)
 - [3. Package and Environment Management](#3-package-and-environment-management)
