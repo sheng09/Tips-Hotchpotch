@@ -23,6 +23,8 @@ A Mixture of Tips
   - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
   - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
   - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
 
 <!-- /TOC -->
 
@@ -369,3 +371,35 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
   Where `-B100` signifies the number of lines before the kill happened. Omit `-T` on Mac OS.
   
   The source is from [here](https://stackoverflow.com/questions/726690/what-killed-my-process-and-why)
+
+# 5. Mac Things
+## 5.1 How to install sshfs for Mac with M1/M2 chips
+
+- Downloand and install macFUSE with the `.pkg` file from `https://osxfuse.github.io/`.
+- Install `sshfs` manually:
+  - Download source files for `sshfs` from `https://github.com/osxfuse/sshfs`. In fact, I fork this to `https://github.com/sheng09/osx_sshfs`.
+    ```bash
+    cd ~/Downloads
+    git clone https://github.com/osxfuse/sshfs
+    #or
+    # git clone https://github.com/sheng09/osx_sshfs
+    ```
+  - Install necessary packages via brew:
+    ```bash
+    brew install glib
+    brew install automake autoconf
+    brew install pkg-config
+    ```
+  - Modify source codes.
+    ```c
+    //#  include <fuse_darwin.h>  // comment this line
+    #  include <fuse.h> // add this line refer to https://github.com/osxfuse/osxfuse/issues/751
+    ```
+  - Compile and install
+    ```bash
+    test -e Makefile.in
+    autoreconf -i
+    ./configure
+    make
+    sudo make install # this will generate the `/usr/local/bin/sshfs`
+    ```
