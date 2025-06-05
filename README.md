@@ -16,9 +16,11 @@ A Mixture of Tips
 - [3. Package and Environment Management](#3-package-and-environment-management)
   - [3.1 Manage Python modules with `pip3`](#31-manage-python-modules-with-pip3)
   - [3.2 `conda` for Package and Environment Management](#32-conda-for-package-and-environment-management)
-- [4. HPC, MPI, CUDA Things](#4-hpc-mpi-cuda-things)
+- [4. HPC, MPI, CUDA, HDF5 Things](#4-hpc-mpi-cuda-hdf5-things)
   - [4.1 Enable `mpi4py` and `openmpi` for `cupy`](#41-enable-mpi4py-and-openmpi-for-cupy)
   - [4.2 Runtime Err `[LOG_CAT_ML] ml_discover_hierarchy exited with error`](#42-runtime-err-log_cat_ml-ml_discover_hierarchy-exited-with-error)
+  - [4.3 Install `h5py` with `openmpi` support on NCI Gadi](#43-install-h5py-with-openmpi-support-on-nci-gadi)
+  - [4.4 Parallel writing to `HDF5` files](#44-parallel-writing-to-hdf5-files)
 - [X. Some problems and answers](#x-some-problems-and-answers)
   - [X.1 Run `pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
   - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
@@ -26,6 +28,43 @@ A Mixture of Tips
 - [5. Mac Things](#5-mac-things)
   - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
 
+<!-- /TOC -->
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+
+<!-- /TOC -->
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+
+<!-- /TOC -->
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+
+<!-- /TOC -->`pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+
+<!-- /TOC -->
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+
+<!-- /TOC -->`pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
+  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
+  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
+- [5. Mac Things](#5-mac-things)
+  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+
+<!-- /TOC -->
 <!-- /TOC -->
 
 # 1. Install and Configure Ubuntu
@@ -230,7 +269,7 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
     ```
 
 
-# 4. HPC, MPI, CUDA Things
+# 4. HPC, MPI, CUDA, HDF5 Things
 
 ## 4.1 Enable `mpi4py` and `openmpi` for `cupy`
 
@@ -332,7 +371,148 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
   ```bash
   mpirun -x LD_PRELOAD=libmpi.so ... python3 path/to/my/script.py ...
   ```
+
+## 4.3 Install `h5py` with `openmpi` support on NCI Gadi
+
+- Step 1: Load the HDF5 module that support parallel IO.
+
+  For example, on NCI Gadi, we can load the `hdf5/1.10.7p`:
+  ```bash
+  module load hdf5/1.10.7p
+  ```
+
+- Step 2: Install `h5py` with `openmpi` support.
+
+  Normally, the `h5py` which support parallel IO can be installed with `pip3` easily:
+  ```bash
+  CC=mpicc HDF5_MPI="ON" pip3 install --user --no-binary=h5py h5py
+  ```
   
+  **Error and Fix**
+
+  However, on NCI Gadi (or elsewhere), the installation progress could fail. Error messages like **"...cannot find libhdf5.so..."** or **"...HDF5 version string not in X.Y.Z[.P] format..."** can show up.
+
+  This is because cannot find the library files `libhdf5.so` and `libhdf5_hl.so`, which in fact are named in other ways in the machine. For example, on NCI Gadi, the library file is named as `libhdf5_ompi3.so` and `libhdf5_hl_ompi3.so` (the files are inside the folder `/apps/hdf5/1.10.7p/lib/` corresponding to our load of `hdf5/1.10.7p` above).
+
+  To fix this error, we need to modify `h5py`'s installation files manually.
+  
+    - Download the source code of `h5py`.
+      ```bash
+      # run in bash
+      mkdir ~/junk/ # create a junk folder to store the source code
+      cd ~/junk/    # feel free to delete this folder after the installation
+      pip3 download --no-binary=h5py h5py
+      tar -xvf h5py-*.tar.gz
+      ```
+    - Edit the `setup_build.py` as follows. It will fix the **"...cannot find libhdf5.so..."** error.
+      ```python
+      # Python file: setup_build.py
+      # Find the line like this:
+      'libraries': ['hdf5', 'hdf5_hl'],
+      # Change it to:
+      'libraries': ['hdf5_ompi3', 'hdf5_hl_ompi3'],
+      ```
+    - Edit `setup_configure.py` as follows. It will fix the **"...HDF5 version string not in X.Y.Z[.P] format..."**. This is because on NCI Gadi, the HDF5 version is `1.10.7p`, which is not in the format of `X.Y.Z[.P]`.
+      ```python
+      # Python file: setup_configure.py
+      # Find the line like this:
+      m = re.match('(\d+)\.(\d+)\.(\d+)(?:\.\d+)?$', s)
+      # Change it to:
+      m = re.match('(\d+)\.(\d+)\.(\d+)(?:\.\d+)?', s) # delete the `$`
+      ```
+    - Install now
+      ```bash
+      # run in bash
+      CC=mpicc HDF5_MPI="ON" pip3 install . --user --no-binary=h5py
+      ```
+    - Test
+      ```bash
+      # run in bash
+      python3 -c "import h5py; print(h5py.__version__)"
+      ```
+## 4.4 Parallel writing to `HDF5` files
+
+To make it simple, parallel writing to `HDF5` files consists of steps (1) open the file, (2) create group(s) and dataset(s), (3) write data, and (4) close the file. Now, here comes the significant message: in HDF5, **all the "metadata" must be created by all ranks in collective mode. That is: every processor will open the file, create all groups, create all datasets. Note that in the case of extendable datasets the resizing must also be done collectively. Then, you can write to the specified datasets individually.**
+
+For example, let us assume two PROCs, and PROC0 wants to create group and dataset `"p0/d0"` and PROC1 wants `"p1/d1"`. Then, the `"p0/d0"` and `"p1/d1"` must be created by all the PROCs (here PROC0 and PROC1). A wrong method to create the `"p0/d0"` on PROC0 only and `"p1/d1"` on PROC1 only.
+
+Codes below explain this:
+
+**The wrong method:**
+```python
+# Python file
+# !!! THIS METHOD IS WRONG !!!
+from mpi4py import MPI
+mpi_comm = MPI.COMM_WORLD.Dup()
+mpi_rank = mpi_comm.Get_rank()
+mpi_size = mpi_comm.Get_size()
+import h5py
+
+grp_name = f'p{mpi_rank}'
+dat_name = f'd{mpi_rank}'
+fid  = h5py.File('test.h5', 'w', driver='mpio', comm=mpi_comm)
+grp  = f.create_group(grp_name) # NOTE HERE: this is wrong, as it is not collective operation
+dset = grp.create_dataset(dat_name, 10 ) # NOTE HERE: this is wrong, as it is not collective operation
+# the 10 is meaningless here, just an example
+fid.close()
+```
+
+**The correct method**
+```python
+# Python file
+# !!! THIS METHOD IS CORRECT !!!
+from mpi4py import MPI
+mpi_comm = MPI.COMM_WORLD.Dup()
+mpi_rank = mpi_comm.Get_rank()
+mpi_size = mpi_comm.Get_size()
+import h5py
+
+
+fid  = h5py.File('test.h5', 'w', driver='mpio', comm=mpi_comm)
+for iproc in range(mpi_size):
+    mpi_comm.Barrier()
+    grp_name = f'p{iproc}'
+    dat_name = f'd{iproc}'
+    grp  = f.create_group(grp_name) # Now, it is a collective operation
+    dset = grp.create_dataset(dat_name, 10 ) # Now, it is a collective operation
+    # the 10 is meaningless here, just an example
+fid.close()
+```
+
+
+**One more correct method**
+Below shows each PROC creates its own group and dataset, and write data with variable size.
+
+```python
+from mpi4py import MPI
+mpi_comm = MPI.COMM_WORLD.Dup()
+mpi_rank = mpi_comm.Get_rank()
+mpi_size = mpi_comm.Get_size()
+import h5py
+
+
+# now generate some data with random size
+sz = np.random.randint(5, 10)
+xs = np.full(sz, mpi_rank)
+all_sz = mpi_comm.allgather(sz)  # gather the size of each PROC,
+#the allgather's returns a list in a sorted order based on the rank of the source process
+
+fid  = h5py.File('test.h5', 'w', driver='mpio', comm=mpi_comm)
+for iproc in range(mpi_size):
+    mpi_comm.Barrier()
+    grp_name = f'p{iproc}'
+    dat_name = f'd{iproc}'
+    grp  = f.create_group(grp_name) # This is a collective operation
+    dset = grp.create_dataset(dat_name, all_sz[iproc], ) # This is a collective operation
+    # the 10 is meaningless here, just an example
+
+# Write data
+dset = fid['p{}/d{}'.format(mpi_rank, mpi_rank)] # Each proc only deal with its own dataset
+dset[:] = xs
+
+fid.close()
+```
+
 
 # X. Some problems and answers
 
