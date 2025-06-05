@@ -392,6 +392,7 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
     - Test
       ```bash
       # run in bash
+      cd ~
       python3 -c "import h5py; print(h5py.__version__)"
       ```
 ## 4.4 Parallel writing to `HDF5` files
