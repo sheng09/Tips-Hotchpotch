@@ -403,6 +403,7 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
       cd ~/junk/    # feel free to delete this folder after the installation
       pip3 download --no-binary=h5py h5py
       tar -xvf h5py-*.tar.gz
+      cd h5py-your-folder-name ## !!!edit here to cd into your specific source code folder
       ```
     - Edit the `setup_build.py` as follows. It will fix the **"...cannot find libhdf5.so..."** error.
       ```python
@@ -432,9 +433,11 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
       ```
 ## 4.4 Parallel writing to `HDF5` files
 
-To make it simple, parallel writing to `HDF5` files consists of steps (1) open the file, (2) create group(s) and dataset(s), (3) write data, and (4) close the file. Now, here comes the significant message: in HDF5, **all the "metadata" must be created by all ranks in collective mode. That is: every processor will open the file, create all groups, create all datasets. Note that in the case of extendable datasets the resizing must also be done collectively. Then, you can write to the specified datasets individually.**
+To make it simple, parallel writing to `HDF5` files consists of steps (1) open the file, (2) create group(s) and dataset(s), (3) write data, and (4) close the file. 
 
-For example, let us assume two PROCs, and PROC0 wants to create group and dataset `"p0/d0"` and PROC1 wants `"p1/d1"`. Then, the `"p0/d0"` and `"p1/d1"` must be created by all the PROCs (here PROC0 and PROC1). A wrong method to create the `"p0/d0"` on PROC0 only and `"p1/d1"` on PROC1 only.
+Now, here comes the significant message: in HDF5, **all the "metadata" must be created by all ranks in collective mode. That is: every processor will open the file, create all groups, create all datasets. Note that in the case of extendable datasets the resizing must also be done collectively. Then, you can write to the specified datasets individually.**
+
+For example, let us assume two PROCs, and PROC0 wants to create the group and dataset `"p0/d0"` and PROC1 wants `"p1/d1"`. Then, the `"p0/d0"` and `"p1/d1"` must be created by all the PROCs (here PROC0 and PROC1). A wrong method is to create the `"p0/d0"` on PROC0 only and `"p1/d1"` on PROC1 only.
 
 Codes below explain this:
 
@@ -448,11 +451,11 @@ mpi_rank = mpi_comm.Get_rank()
 mpi_size = mpi_comm.Get_size()
 import h5py
 
+fid  = h5py.File('test.h5', 'w', driver='mpio', comm=mpi_comm)
 grp_name = f'p{mpi_rank}'
 dat_name = f'd{mpi_rank}'
-fid  = h5py.File('test.h5', 'w', driver='mpio', comm=mpi_comm)
-grp  = f.create_group(grp_name) # NOTE HERE: this is wrong, as it is not collective operation
-dset = grp.create_dataset(dat_name, 10 ) # NOTE HERE: this is wrong, as it is not collective operation
+grp  = fid.create_group(grp_name) # NOTE HERE: this is wrong, as it is not collective operation
+dset = grp.create_dataset(dat_name, 10 ) # this is wrong, as it is not collective operation
 # the 10 is meaningless here, just an example
 fid.close()
 ```
@@ -473,15 +476,16 @@ for iproc in range(mpi_size):
     mpi_comm.Barrier()
     grp_name = f'p{iproc}'
     dat_name = f'd{iproc}'
-    grp  = f.create_group(grp_name) # Now, it is a collective operation
+    grp  = fid.create_group(grp_name) # Now, it is a collective operation
     dset = grp.create_dataset(dat_name, 10 ) # Now, it is a collective operation
     # the 10 is meaningless here, just an example
 fid.close()
 ```
 
 
-**One more correct method**
-Below shows each PROC creates its own group and dataset, and write data with variable size.
+**An useful example**
+
+Below shows that each PROC creates its own group and dataset, and write data with variable size.
 
 ```python
 from mpi4py import MPI
@@ -489,6 +493,7 @@ mpi_comm = MPI.COMM_WORLD.Dup()
 mpi_rank = mpi_comm.Get_rank()
 mpi_size = mpi_comm.Get_size()
 import h5py
+import numpy as np
 
 
 # now generate some data with random size
@@ -502,7 +507,7 @@ for iproc in range(mpi_size):
     mpi_comm.Barrier()
     grp_name = f'p{iproc}'
     dat_name = f'd{iproc}'
-    grp  = f.create_group(grp_name) # This is a collective operation
+    grp  = fid.create_group(grp_name) # This is a collective operation
     dset = grp.create_dataset(dat_name, all_sz[iproc], ) # This is a collective operation
     # the 10 is meaningless here, just an example
 
