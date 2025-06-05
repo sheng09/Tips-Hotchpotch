@@ -29,43 +29,6 @@ A Mixture of Tips
   - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
 
 <!-- /TOC -->
-  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
-  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
-- [5. Mac Things](#5-mac-things)
-  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
-
-<!-- /TOC -->
-  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
-  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
-- [5. Mac Things](#5-mac-things)
-  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
-
-<!-- /TOC -->
-  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
-  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
-- [5. Mac Things](#5-mac-things)
-  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
-
-<!-- /TOC -->`pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
-  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
-  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
-- [5. Mac Things](#5-mac-things)
-  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
-
-<!-- /TOC -->
-  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
-  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
-- [5. Mac Things](#5-mac-things)
-  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
-
-<!-- /TOC -->`pyvista` from SSH Remote Server](#x1-run-pyvista-from-ssh-remote-server)
-  - [X.2 `Rsync` cheatsheet](#x2-rsync-cheatsheet)
-  - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
-- [5. Mac Things](#5-mac-things)
-  - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
-
-<!-- /TOC -->
-<!-- /TOC -->
 
 # 1. Install and Configure Ubuntu
 
