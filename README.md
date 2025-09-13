@@ -13,6 +13,7 @@ A Mixture of Tips
   - [2.2 Apache Server](#22-apache-server)
   - [2.3 Jupyter-lab Server](#23-jupyter-lab-server)
   - [2.4 Connect to a Remote Server via An Intermediate Server](#24-connect-to-a-remote-server-via-an-intermediate-server)
+  - [2.5 VNC connection to remote server](#25-vnc-connection-to-remote-server)
 - [3. Package and Environment Management](#3-package-and-environment-management)
   - [3.1 Manage Python modules with `pip3`](#31-manage-python-modules-with-pip3)
   - [3.2 `conda` for Package and Environment Management](#32-conda-for-package-and-environment-management)
@@ -177,6 +178,30 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
   - **Manually ssh Connection**
 
     Coming when in demand.
+
+## 2.5 VNC connection to remote server
+
+- Login to the remote server via ssh.
+- Check **which user** is logged in on **which screen**.
+  ```bash
+  who
+  #The output could be like:
+  your_user_name pts/0        2024-05-01 10:00 (your_ip_address)
+  your_user_name :1           2024-05-01 09:30 (your_ip_address)
+  ```
+  Here, `:1` means the screen number is `1`.
+- Start a VNC server wit the `:N` option, where `N` is the screen number.
+  ```bash
+  x11vnc -display :1 -auth /home/<your_username>/.Xauthority -forever -passwd  your_password
+  ```
+  Find the `PORT=????` line in the output. Usually, `PORT=5900` is used.
+- Connect to the remote server via a VNC client.
+  - MacOS has a built-in VNC client, and lanuch it by running the command in local terminal:
+    ```bash
+    open vnc://<remote_server_ip_address>:5900
+    ```
+    Please replate the `5900` to the port number shown in the output of `x11vnc ...` above.
+  - Or, a ssh tunnel can be used, and then `localhost` can be used instead of using directly the remote server IP address.
 
 # 3. Package and Environment Management
 
