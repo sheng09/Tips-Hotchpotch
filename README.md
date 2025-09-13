@@ -186,8 +186,8 @@ Sometimes, we need to use an intermediate server, a jump box, to connect to an s
   ```bash
   who
   #The output could be like:
-  your_user_name pts/0        2024-05-01 10:00 (your_ip_address)
-  your_user_name :1           2024-05-01 09:30 (your_ip_address)
+  #your_user_name pts/0        2024-05-01 10:00 (your_ip_address)
+  #your_user_name :1           2024-05-01 09:30 (your_ip_address)
   ```
   Here, `:1` means the screen number is `1`.
 - Start a VNC server wit the `:N` option, where `N` is the screen number.
