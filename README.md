@@ -28,6 +28,8 @@ A Mixture of Tips
   - [X.3 What and why `Kill` a process](#x3-what-and-why-kill-a-process)
 - [5. Mac Things](#5-mac-things)
   - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
+- [Using Alps](#using-alps)
+  - [uenv, venv (for python3 modules), and submit jobs using uenv\&venv](#uenv-venv-for-python3-modules-and-submit-jobs-using-uenvvenv)
 
 <!-- /TOC -->
 
@@ -577,3 +579,91 @@ fid.close()
     make
     sudo make install # this will generate the `/usr/local/bin/sshfs`
     ```
+
+# Using Alps
+
+## uenv, venv (for python3 modules), and submit jobs using uenv&venv
+
+- **To compile something**, we need to login to head node --> start an uenv --> compile.
+    ```bash
+    # Step 1: login daint
+    #
+    # Step 2: start an uenv
+    uenv start --view=default  prgenv-gnu-openmpi/26.3:v1
+    # alias can be used for the command above.
+    #
+    # Step 3: check the status of uenv
+    uenv status 
+    #
+    # Step 4: compile something
+    # ...
+    #
+    # To exit an uenv, run:
+    exit
+    ```
+
+    The entire steps for start an uenv is:  
+    ```bash
+    # Step 1: show all uenv images
+    uenv image find #
+    # Step 2: pull one image, for example, prgenv-gnu-openmpi/26.3:v1
+    uenv image pull prgenv-gnu-openmpi/26.3:v1
+    # Step 3: start an uenv
+    uenv start --view=default  prgenv-gnu-openmpi/26.3:v1
+    ```
+
+- **To install a python3 module**, we need to create a venv on top of the uenv, run:
+    ```bash
+    # Step 1:  start an uenv
+    uenv start --view=default  prgenv-gnu-openmpi/26.3:v1
+    # or run the alias command
+    #
+    # Step 2: set some python3 environment variables
+    # unset PYTHONPATH to avoid surprises
+    unset PYTHONPATH
+    #set PYTHONUSERBASE to the root of the view
+    export PYTHONUSERBASE="$(dirname "$(dirname "$(which python)")")"
+    #
+    # Step 3: create a venv
+    python3 -m venv --system-site-packages path/to/my-venv
+    #
+    # Step 4: active the venv
+    source path/to/my-venv/bin/activate
+    #
+    # Step 5: use the pip3
+    #verify that packages from the uenv are visible (note Locations)
+    pip list -v
+    #install 
+    pip3 install numpy mpi4py # an example
+    ```
+  
+- **To submit a job that uses the uenv and venv**. Format the sbatch file like:
+    ```bash
+    #!/bin/bash
+    #SBATCH --uenv=prgenv-gnu-openmpi/26.3:v1
+    #SBATCH --view=default
+    #SBATCH --job-name=mpi_test
+    #SBATCH --output=stdout.log
+    #SBATCH --error=stderr.log
+    #SBATCH --time=00:01:00
+    #SBATCH --nodes=1
+    #SBATCH --ntasks-per-node=4
+    #SBATCH --partition=normal
+    #SBATCH --constraint=gpu
+    #SBATCH --account=lp130
+    #
+    unset PYTHONPATH
+    export PYTHONUSERBASE="$(dirname "$(dirname "$(which python3)")")"
+    source /users/wsheng/venv_wd/bin/activate
+    #
+    uenv status
+    which python3
+    #
+    # Run the python script using the configuration specified above
+    srun python3 50a_hello_mpi.py
+    ```
+
+    Then, we can submit the batch file from a login node.
+
+    **Note**, when submit, it does not matter if the uenv or venv are activated or not on the login node. The sbatch file above explicitly tell compute nodes to use specific uenv and venv, and then run programs.
+    
