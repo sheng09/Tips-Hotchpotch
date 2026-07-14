@@ -642,25 +642,27 @@ fid.close()
     #!/bin/bash
     #SBATCH --uenv=prgenv-gnu-openmpi/26.3:v1
     #SBATCH --view=default
-    #SBATCH --job-name=mpi_test
-    #SBATCH --output=stdout.log
-    #SBATCH --error=stderr.log
-    #SBATCH --time=00:01:00
-    #SBATCH --nodes=1
-    #SBATCH --ntasks-per-node=4
-    #SBATCH --partition=normal
     #SBATCH --constraint=gpu
     #SBATCH --account=lp130
-    #
+    #SBATCH --partition=normal
+    #SBATCH --job-name=mpi_test
+    #SBATCH --time=00:05:00
+    #SBATCH --nodes=1
+    #SBATCH --ntasks-per-node=73
+    #SBATCH --cpus-per-task=1
+    #SBATCH --output=stdout.log
+    #SBATCH --error=stderr.log
+    
+    
     unset PYTHONPATH
     export PYTHONUSERBASE="$(dirname "$(dirname "$(which python3)")")"
     source /users/wsheng/venv_wd/bin/activate
-    #
+    
     uenv status
     which python3
-    #
+    
     # Run the python script using the configuration specified above
-    srun python3 50a_hello_mpi.py
+    srun --mpi=pmix python3 50a_hello_mpi.py
     ```
 
     Then, we can submit the batch file from a login node.
