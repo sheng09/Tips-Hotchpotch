@@ -30,6 +30,7 @@ A Mixture of Tips
   - [5.1 How to install sshfs for Mac with M1/M2 chips](#51-how-to-install-sshfs-for-mac-with-m1m2-chips)
 - [Using Alps](#using-alps)
   - [uenv, venv (for python3 modules), and submit jobs using uenv\&venv](#uenv-venv-for-python3-modules-and-submit-jobs-using-uenvvenv)
+  - [Connect to daint with VS Code tunnel](#connect-to-daint-with-vs-code-tunnel)
 
 <!-- /TOC -->
 
@@ -668,4 +669,20 @@ fid.close()
     Then, we can submit the batch file from a login node.
 
     **Note**, when submit, it does not matter if the uenv or venv are activated or not on the login node. The sbatch file above explicitly tell compute nodes to use specific uenv and venv, and then run programs.
-    
+
+## Connect to daint with VS Code tunnel
+
+All information are [here](https://docs.cscs.ch/access/vscode/#flexible-method-remote-server). 
+
+In short, the steps are:
+- Login to daint login node via ssh
+- start uenv `uenv start --view=default  prgenv-gnu-openmpi/26.3:v1`
+- activate venv `source venv_wd/bin/activate`
+- (optionally) ask for and enter a compute node `srun --account=lp130   --partition=normal   --nodes=1  --ntasks=1  --gpus-per-task=1  --cpus-per-task=16 --time=01:00:00  --pty bash`. If we do not ask for a compute node, the vscode will connect to the login node.
+- create a tunnel `code tunnel --name=$CLUSTER_NAME-tunnel` (how to install vscode is in the above link)
+- go to local vscode, and connect to the tunnel.
+- **Note**: in the vscode, we must set `remote.autoForwardPorts` to `false`:
+  - Open VS Code and open your Settings (Ctrl+, or Cmd+,).
+  - Make sure you select the Remote [Tunnel: daint-uenv] tab at the top so this applies to Daint.
+  - Search for Auto Forward Ports (remote.autoForwardPorts).
+  - Turn it Off (or set it to false).
