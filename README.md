@@ -31,6 +31,8 @@ A Mixture of Tips
 - [Using Alps](#using-alps)
   - [uenv, venv (for python3 modules), and submit jobs using uenv\&venv](#uenv-venv-for-python3-modules-and-submit-jobs-using-uenvvenv)
   - [Connect to daint with VS Code tunnel](#connect-to-daint-with-vs-code-tunnel)
+    - [A direct method](#a-direct-method)
+    - [A better method](#a-better-method)
 
 <!-- /TOC -->
 
@@ -674,6 +676,8 @@ fid.close()
 
 All information are [here](https://docs.cscs.ch/access/vscode/#flexible-method-remote-server). 
 
+### A direct method
+
 In short, the steps are:
 - Login to daint login node via ssh
 - start uenv `uenv start --view=default  prgenv-gnu-openmpi/26.3:v1`
@@ -686,3 +690,62 @@ In short, the steps are:
   - Make sure you select the Remote [Tunnel: daint-uenv] tab at the top so this applies to Daint.
   - Search for Auto Forward Ports (remote.autoForwardPorts).
   - Turn it Off (or set it to false).
+- **NOTE** This method is not robust. If the ssh connection is broken, the tunnel will be broken too. Then, we need to start the tunnel again. Tbe method below can fix this issue.
+
+### A better method
+This method can survive the situation that the ssh connection is broken. It runs the tunnel through `systemctl` so it the running is independent of the ssh connection. Steps for configuration and how to use are:
+- Login to daint login node via ssh
+- Go to the your home directoy, and edit the file `.config/systemd/user/code-tunnel.service` as below
+  ```
+  [Unit]
+  Description=VS Code Tunnel for Daint
+  After=network-online.target
+  Wants=network-online.target
+  
+  [Service]
+  Type=simple
+  ExecStart=/usr/bin/bash -lc 'uenv run --view=default prgenv-gnu-openmpi/26.3:v1 -- bash -lc "source %h/venv_wd/bin/activate && exec code tunnel --name=daint-tunnel --accept-server-license-terms"'
+  Restart=on-failure
+  RestartSec=10
+
+  StandardOutput=append:%h/code-tunnel.log
+  StandardError=append:%h/code-tunnel.log
+
+  [Install]
+  WantedBy=default.target
+  ```
+  Note:
+  - Change the `%h/venv_wd/bin/activate` to your own venv path.
+  -  `%h` means the home directory of the user. 
+- Then, edit your `.bashrc` file to add the following alias
+  ```bash
+  alias tunnel-reload='systemctl --user daemon-reload'
+  alias tunnel-restart='systemctl --user restart code-tunnel'
+  alias tunnel-start='systemctl --user start code-tunnel'
+  alias tunnel-status='systemctl --user status --no-pager code-tunnel'
+  alias tunnel-stop='systemctl --user stop code-tunnel'
+  ```
+- Then, reload:
+  ```bash
+  # go the your terminal, and run
+  tunnel-reload
+  ```
+- Now, setting is done.
+- How to use:
+  ```bash
+  # 1. start the tunnel.
+  tunnel-start 
+  # 2. check the status of the tunnel
+  tunnel-status
+  # 3. view the log of the tunnel to find the github login codes (this may not be needed if you used the code tunnel before)
+  cat ~/code-tunnel.log
+  # 4. go to your local laptop, open vscode, and connect to the tunnel.
+  #
+  # 5. The tunnel will keep running even if you logout. To stop the tunnel, run:
+  tunnel-stop
+  # 6. As long as the tunnel is running, you can connect to it from your local vscode, and you do not need to start the tunnel again. To check if the tunnel is running, run:
+  tunnel-status
+  # 7. If you make any changes to the configuration file, then you need to reload and restart the tunnel to make the changes effective:
+  tunnel-reload
+  tunnel-restart
+  ```
